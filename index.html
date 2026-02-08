@@ -1,76 +1,205 @@
 <!DOCTYPE html>
-<html lang="am">
+<html lang="am" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>የመጽሐፍት መጋዘን</title>
+    <title>Qenanmos Book Store | መጽሐፍት መፈለጊያ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #0088cc;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+        }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Noto Sans Ethiopic', sans-serif;
+            background-color: var(--bg-color);
             margin: 0;
-            background-color: #f4f4f9;
-            color: #333;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         header {
-            background-color: #0088cc; /* Telegram Blue */
-            color: white;
-            padding: 20px;
+            background-color: white;
+            width: 100%;
+            padding: 25px 0;
             text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-        .container {
-            padding: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+        h1 { margin: 0; color: var(--primary-color); font-size: 2rem; }
+
+        /* የፍለጋ ሳጥን ዲዛይን */
+        .search-container {
+            width: 90%;
+            max-width: 600px;
+            margin: 40px 0;
+            position: relative;
+        }
+        .search-box {
+            width: 100%;
+            padding: 18px 55px 18px 25px;
+            border-radius: 50px;
+            border: 2px solid #ddd;
+            font-size: 17px;
+            outline: none;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+        .search-box:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 6px 20px rgba(0,136,204,0.15);
+        }
+        .search-icon {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 22px;
+            color: #aaa;
+        }
+
+        /* የመጽሐፍት ዝርዝር */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            width: 90%;
+            max-width: 1200px;
+            padding-bottom: 60px;
         }
         .book-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin: 15px;
-            width: 250px;
-            overflow: hidden;
-            transition: 0.3s;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            text-align: center;
+            transition: 0.4s ease;
+            border: 1px solid #ececec;
         }
-        .book-card:hover { transform: translateY(-5px); }
-        .book-info { padding: 15px; text-align: center; }
-        .book-title { font-weight: bold; font-size: 1.1em; margin-bottom: 10px; }
-        .author { color: #666; font-size: 0.9em; margin-bottom: 15px; }
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+        }
+        .file-icon { font-size: 50px; margin-bottom: 15px; }
+        .book-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .book-author { color: #888; font-size: 0.9rem; margin-bottom: 25px; }
+        
         .download-btn {
             display: inline-block;
-            background-color: #0088cc;
+            background-color: var(--primary-color);
             color: white;
-            padding: 10px 20px;
+            padding: 14px 30px;
+            border-radius: 35px;
             text-decoration: none;
-            border-radius: 5px;
             font-weight: bold;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,136,204,0.3);
         }
+        .download-btn:hover { background-color: #0077b5; box-shadow: 0 6px 15px rgba(0,136,204,0.4); }
+
+        .loading-text { font-size: 1.2rem; color: #666; margin-top: 50px; }
+        .no-results { display: none; color: #999; margin-top: 50px; font-size: 1.1rem; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>የኢትዮጵያ ዲጂታል ቤተ-መጽሐፍት</h1>
-    <p>መጽሐፍትን በነጻ ከቴሌግራም ያውርዱ</p>
-</header>
+    <header>
+        <h1>📚 Qenanmos Book Store</h1>
+    </header>
 
-<div class="container">
-    <div class="book-card">
-        <div class="book-info">
-            <div class="book-title">ፍቅር እስከ መቃብር</div>
-            <div class="author">ሀዲስ አለማየሁ</div>
-            <a href="https://t.me/your_channel/1" class="download-btn">አውርድ (Telegram)</a>
-        </div>
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-box" placeholder="የመጽሐፍ ስም እዚህ ይፈልጉ..." autocomplete="off">
+        <span class="search-icon">🔍</span>
     </div>
 
-    <div class="book-card">
-        <div class="book-info">
-            <div class="book-title">የሀብታም አባት የደሃ አባት</div>
-            <div class="author">ሮበርት ኪዮሳኪ (ትርጉም)</div>
-            <a href="https://t.me/your_channel/2" class="download-btn">አውርድ (Telegram)</a>
+    <div id="loading" class="loading-text">መጽሐፍትን በመጫን ላይ...</div>
+
+    <div class="book-grid" id="bookGrid">
         </div>
+
+    <div id="noResults" class="no-results">
+        <p>የፈለጉት መጽሐፍ አልተገኘም።</p>
     </div>
-</div>
+
+    <script>
+        // የቦትህ ስም
+        const BOT_USERNAME = "QenanmosBookStore_bot";
+        
+        // በ Render ላይ ያለው የAPI ሊንክህ (መጽሐፍቱን ከዳታቤዝ የሚያመጣው)
+        const API_URL = "https://qenanmos-book-store-1.onrender.com/api/books";
+
+        async function fetchBooks() {
+            try {
+                // መጽሐፍቱን ከሰርቨርህ ይጠይቃል
+                const response = await fetch(API_URL);
+                const books = await response.json();
+                
+                document.getElementById('loading').style.display = 'none';
+                displayBooks(books);
+            } catch (error) {
+                console.error("Error fetching books:", error);
+                document.getElementById('loading').innerText = "መጽሐፍቱን መጫን አልተቻለም። እባክዎ ሰርቨሩ መነሳቱን ያረጋግጡ።";
+            }
+        }
+
+        function displayBooks(books) {
+            const grid = document.getElementById('bookGrid');
+            grid.innerHTML = ""; // ገጹን ያጸዳዋል
+
+            books.forEach(book => {
+                const card = document.createElement('div');
+                card.className = 'book-card';
+                card.innerHTML = `
+                    <div class="file-icon">📄</div>
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">👤 Qenanmos Store</div>
+                    <a href="https://t.me/${BOT_USERNAME}?start=${book.fileId}" class="download-btn">
+                        📥 በቴሌግራም አውርድ
+                    </a>
+                `;
+                grid.appendChild(card);
+            });
+
+            // ፍለጋውን እዚህ ጋር እናነሳሳለን
+            setupSearch();
+        }
+
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const bookCards = document.getElementsByClassName('book-card');
+            const noResults = document.getElementById('noResults');
+
+            searchInput.addEventListener('input', function() {
+                const filter = searchInput.value.toLowerCase();
+                let hasMatches = false;
+
+                for (let card of bookCards) {
+                    const title = card.querySelector('.book-title').innerText.toLowerCase();
+                    if (title.includes(filter)) {
+                        card.style.display = "";
+                        hasMatches = true;
+                    } else {
+                        card.style.display = "none";
+                    }
+                }
+                noResults.style.display = hasMatches ? "none" : "block";
+            });
+        }
+
+        // ገጹ ሲከፈት መጽሐፍቱን ማምጣት ይጀምራል
+        window.onload = fetchBooks;
+    </script>
 
 </body>
 </html>
