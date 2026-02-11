@@ -1,205 +1,254 @@
 <!DOCTYPE html>
-<html lang="am" dir="ltr">
+<html lang="am">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qenanmos Book Store | መጽሐፍት መፈለጊያ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;700&display=swap" rel="stylesheet">
+    <title>MULE TECH | Premium Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --primary-color: #0088cc;
-            --bg-color: #f0f2f5;
-            --card-bg: #ffffff;
-        }
-        body {
-            font-family: 'Noto Sans Ethiopic', sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        header {
-            background-color: white;
-            width: 100%;
-            padding: 25px 0;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        h1 { margin: 0; color: var(--primary-color); font-size: 2rem; }
-
-        /* የፍለጋ ሳጥን ዲዛይን */
-        .search-container {
-            width: 90%;
-            max-width: 600px;
-            margin: 40px 0;
-            position: relative;
-        }
-        .search-box {
-            width: 100%;
-            padding: 18px 55px 18px 25px;
-            border-radius: 50px;
-            border: 2px solid #ddd;
-            font-size: 17px;
-            outline: none;
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            box-sizing: border-box;
-        }
-        .search-box:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 6px 20px rgba(0,136,204,0.15);
-        }
-        .search-icon {
-            position: absolute;
-            right: 25px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 22px;
-            color: #aaa;
-        }
-
-        /* የመጽሐፍት ዝርዝር */
-        .book-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            width: 90%;
-            max-width: 1200px;
-            padding-bottom: 60px;
-        }
-        .book-card {
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 25px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-            text-align: center;
-            transition: 0.4s ease;
-            border: 1px solid #ececec;
-        }
-        .book-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
-        }
-        .file-icon { font-size: 50px; margin-bottom: 15px; }
-        .book-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin: 10px 0;
-            min-height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .book-author { color: #888; font-size: 0.9rem; margin-bottom: 25px; }
-        
-        .download-btn {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 14px 30px;
-            border-radius: 35px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
-            box-shadow: 0 4px 10px rgba(0,136,204,0.3);
-        }
-        .download-btn:hover { background-color: #0077b5; box-shadow: 0 6px 15px rgba(0,136,204,0.4); }
-
-        .loading-text { font-size: 1.2rem; color: #666; margin-top: 50px; }
-        .no-results { display: none; color: #999; margin-top: 50px; font-size: 1.1rem; }
+        .hidden { display: none; }
+        #wheel-container { position: relative; width: 300px; height: 300px; margin: 10px auto; }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #1E40AF; transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1); }
+        .v-input { width: 100%; padding: 12px; border: 2px solid #3b82f6; border-radius: 10px; outline: none; background: #f8fafc; font-size: 13px; }
+        .gold-header { color: #FFD700; font-weight: 900; font-size: 2.2rem; text-transform: uppercase; text-align: center; text-shadow: 2px 2px #000; }
+        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ef4444; z-index: 20; }
+        .btn-link { background: #10b981; color: white; padding: 12px 25px; border-radius: 10px; font-weight: bold; display: inline-block; margin-bottom: 10px; width: 100%; text-align: center; }
     </style>
 </head>
-<body>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-2 font-sans">
 
-    <header>
-        <h1>📚 Qenanmos Book Store</h1>
-    </header>
-
-    <div class="search-container">
-        <input type="text" id="searchInput" class="search-box" placeholder="የመጽሐፍ ስም እዚህ ይፈልጉ..." autocomplete="off">
-        <span class="search-icon">🔍</span>
-    </div>
-
-    <div id="loading" class="loading-text">መጽሐፍትን በመጫን ላይ...</div>
-
-    <div class="book-grid" id="bookGrid">
+    <div class="max-w-md w-full bg-white rounded-[2rem] shadow-2xl p-5 border-t-[8px] border-blue-700">
+        <div class="text-center mb-4">
+            <h1 class="gold-header">MULE TECH</h1>
         </div>
 
-    <div id="noResults" class="no-results">
-        <p>የፈለጉት መጽሐፍ አልተገኘም።</p>
+        <div id="auth-page" class="space-y-4">
+            <h2 id="auth-title" class="font-bold text-center text-slate-700">ይግቡ (Login)</h2>
+            <div class="space-y-2">
+                <input type="email" id="auth-email" placeholder="ኢሜይል (Email) *" class="v-input">
+                <input type="password" id="auth-password" placeholder="የይለፍ ቃል (Password) *" class="v-input">
+            </div>
+            <button id="auth-btn" class="w-full bg-blue-700 text-white py-3 rounded-xl font-bold">ግባ</button>
+            <div class="flex items-center my-2">
+                <div class="flex-grow border-t border-gray-300"></div>
+                <span class="px-2 text-gray-400 text-xs">ወይም</span>
+                <div class="flex-grow border-t border-gray-300"></div>
+            </div>
+            <button id="google-btn" class="w-full bg-white border-2 border-slate-200 text-slate-700 py-3 rounded-xl font-bold flex items-center justify-center gap-2">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="20"> በ Google ይቀጥሉ
+            </button>
+            <p class="text-center text-xs text-blue-600 cursor-pointer" id="toggle-auth">አዲስ አካውንት መክፈቻ (Sign Up)</p>
+        </div>
+
+        <div id="page1" class="hidden space-y-3">
+            <h2 class="font-bold text-center text-slate-700 text-sm">👤 የግል መረጃዎን ያስገቡ</h2>
+            <div class="space-y-2 max-h-[50vh] overflow-y-auto px-1">
+                <input type="text" id="fname" placeholder="የመጀመሪያ ስም *" class="v-input">
+                <input type="text" id="mname" placeholder="የአባት ስም *" class="v-input">
+                <input type="text" id="lname" placeholder="የአያት ስም *" class="v-input">
+                <select id="gender" class="v-input">
+                    <option value="">ጾታ ይምረጡ *</option>
+                    <option value="ወንድ">ወንድ</option>
+                    <option value="ሴት">ሴት</option>
+                </select>
+                <input type="text" id="phone" placeholder="የእርስዎ ስልክ ቁጥር *" maxlength="10" class="v-input">
+                <hr>
+                <p class="text-[10px] font-bold text-blue-600">ተጠሪ (Emergency Contact)</p>
+                <input type="text" id="ename" placeholder="የተጠሪ ስም *" class="v-input">
+                <input type="text" id="ephone" placeholder="የተጠሪ ስልክ ቁጥር *" maxlength="10" class="v-input">
+                <div class="flex items-center gap-2 p-2">
+                    <input type="checkbox" id="rule-check"> <label class="text-[10px]">በ MULE TECH ህጎች ተስማምቻለሁ።</label>
+                </div>
+            </div>
+            <button onclick="checkInfoAndNav()" class="w-full bg-blue-700 text-white py-3 rounded-xl font-bold">ቀጥል ➡️</button>
+        </div>
+
+        <div id="page2" class="hidden text-center">
+            <h2 class="font-bold text-blue-800 text-sm mb-2">🎡 እድልዎን ይሞክሩ</h2>
+            <div id="wheel-container"><div class="pointer"></div><canvas id="wheel"></canvas></div>
+            <div id="spin-result-box" class="hidden mt-4 space-y-3 bg-blue-50 p-4 rounded-xl border border-blue-200">
+                <input type="text" id="user-spin-input" class="v-input text-center font-bold text-blue-900 border-blue-500" readonly>
+                <div id="action-links" class="mt-2">
+                    <a id="tg-btn" href="https://t.me/muletechreact" target="_blank" class="btn-link hidden">Telegram Link</a>
+                    <a id="yt-btn" href="https://youtube.com/@muletechreact" target="_blank" class="btn-link hidden">YouTube Link</a>
+                </div>
+                <button id="final-btn" onclick="handleSpinResult()" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold">አረጋግጥና ቀጥል</button>
+            </div>
+            <button id="spin-btn" onclick="spinNow()" class="w-full bg-blue-700 text-white py-3 rounded-xl font-bold">አሽከርክር (SPIN) 🌀</button>
+        </div>
+
+        <div id="page3" class="hidden">
+            <h2 class="text-center font-bold text-blue-900 mb-4">ኮርስ ይምረጡ</h2>
+            <select id="course-dropdown" onchange="document.getElementById('to-pay').classList.remove('hidden')" class="v-input border-blue-400 bg-blue-50">
+                <option value="">-- ኮርስ ይምረጡ --</option>
+                <option value="Video Editing">Video Editing - 400 ETB</option>
+                <option value="Graphics Design">Graphics Design - 400 ETB</option>
+                <option value="Free Internet Config">Free Internet Config - 400 ETB</option>
+                <option value="Social Media Management">Social Media Management - 500 ETB</option>
+            </select>
+            <button id="to-pay" onclick="nav(3, 4)" class="hidden w-full bg-orange-500 text-white py-3 rounded-xl font-bold mt-6">ቀጥል ➡️</button>
+        </div>
+
+        <div id="page4" class="hidden space-y-4">
+            <h2 class="text-center font-bold text-blue-900">የክፍያ አማራጭ</h2>
+            <select id="bank-selector" class="v-input border-blue-600">
+                <option value="">-- ባንክ ይምረጡ --</option>
+                <option value="Telebirr - 0927275152">Telebirr (0927275152)</option>
+                <option value="CBE - 1000745084773">CBE (1000745084773)</option>
+            </select>
+            <button onclick="generateID()" class="w-full bg-blue-700 text-white py-3 rounded-xl font-bold">አረጋግጥ 🆔</button>
+        </div>
+
+        <div id="page5" class="hidden text-center space-y-4">
+            <div class="bg-green-50 p-6 rounded-3xl border-2 border-dashed border-green-500">
+                <p class="text-xs text-green-700 mb-2">የእርስዎ የክፍያ መለያ (ID)</p>
+                <h3 id="final-id" class="text-3xl font-black text-green-800 tracking-widest"></h3>
+            </div>
+            <button onclick="location.reload()" class="w-full bg-green-600 text-white py-4 rounded-xl font-bold">ጨርሻለሁ 🚀</button>
+        </div>
     </div>
 
-    <script>
-        // የቦትህ ስም
-        const BOT_USERNAME = "QenanmosBookStore_bot";
-        
-        // በ Render ላይ ያለው የAPI ሊንክህ (መጽሐፍቱን ከዳታቤዝ የሚያመጣው)
-        const API_URL = "https://qenanmos-book-store-1.onrender.com/api/books";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        async function fetchBooks() {
+        const firebaseConfig = {
+            apiKey: "AIzaSyB3GiwKlwZtlpefj_PbDRUffKYqHzvPK2E",
+            authDomain: "mule-yech.firebaseapp.com",
+            projectId: "mule-yech",
+            storageBucket: "mule-yech.firebasestorage.app",
+            messagingSenderId: "671751802597",
+            appId: "1:671751802597:web:b3c818d5459e4a62654e0c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        let isLogin = true;
+
+        document.getElementById('toggle-auth').onclick = () => {
+            isLogin = !isLogin;
+            document.getElementById('auth-title').innerText = isLogin ? "ይግቡ (Login)" : "ይመዝገቡ (Sign Up)";
+            document.getElementById('auth-btn').innerText = isLogin ? "ግባ" : "ተመዝገብ";
+            document.getElementById('toggle-auth').innerText = isLogin ? "አዲስ አካውንት መክፈቻ (Sign Up)" : "አካውንት አለዎት? ይግቡ";
+        };
+
+        document.getElementById('auth-btn').onclick = async () => {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
             try {
-                // መጽሐፍቱን ከሰርቨርህ ይጠይቃል
-                const response = await fetch(API_URL);
-                const books = await response.json();
-                
-                document.getElementById('loading').style.display = 'none';
-                displayBooks(books);
-            } catch (error) {
-                console.error("Error fetching books:", error);
-                document.getElementById('loading').innerText = "መጽሐፍቱን መጫን አልተቻለም። እባክዎ ሰርቨሩ መነሳቱን ያረጋግጡ።";
-            }
+                if (isLogin) { await signInWithEmailAndPassword(auth, email, password); }
+                else { await createUserWithEmailAndPassword(auth, email, password); }
+                showPersonalPage();
+            } catch (err) { alert("Error: " + err.message); }
+        };
+
+        document.getElementById('google-btn').onclick = async () => {
+            try { await signInWithPopup(auth, provider); showPersonalPage(); }
+            catch (err) { alert("Google Error: " + err.message); }
+        };
+
+        function showPersonalPage() {
+            document.getElementById('auth-page').classList.add('hidden');
+            document.getElementById('page1').classList.remove('hidden');
         }
-
-        function displayBooks(books) {
-            const grid = document.getElementById('bookGrid');
-            grid.innerHTML = ""; // ገጹን ያጸዳዋል
-
-            books.forEach(book => {
-                const card = document.createElement('div');
-                card.className = 'book-card';
-                card.innerHTML = `
-                    <div class="file-icon">📄</div>
-                    <div class="book-title">${book.title}</div>
-                    <div class="book-author">👤 Qenanmos Store</div>
-                    <a href="https://t.me/${BOT_USERNAME}?start=${book.fileId}" class="download-btn">
-                        📥 በቴሌግራም አውርድ
-                    </a>
-                `;
-                grid.appendChild(card);
-            });
-
-            // ፍለጋውን እዚህ ጋር እናነሳሳለን
-            setupSearch();
-        }
-
-        function setupSearch() {
-            const searchInput = document.getElementById('searchInput');
-            const bookCards = document.getElementsByClassName('book-card');
-            const noResults = document.getElementById('noResults');
-
-            searchInput.addEventListener('input', function() {
-                const filter = searchInput.value.toLowerCase();
-                let hasMatches = false;
-
-                for (let card of bookCards) {
-                    const title = card.querySelector('.book-title').innerText.toLowerCase();
-                    if (title.includes(filter)) {
-                        card.style.display = "";
-                        hasMatches = true;
-                    } else {
-                        card.style.display = "none";
-                    }
-                }
-                noResults.style.display = hasMatches ? "none" : "block";
-            });
-        }
-
-        // ገጹ ሲከፈት መጽሐፍቱን ማምጣት ይጀምራል
-        window.onload = fetchBooks;
     </script>
 
+    <script>
+        const BOT_TOKEN = "8225238440:AAGXXD5ph0tGdk96tE6bD-TxEJiwwTWlnw4";
+        const CHAT_ID = "1312047180";
+
+        let spinResult = "";
+        const mainCourses = ["Video Editing", "Graphics Design", "Free Internet Config", "Social Media Management"];
+        const items = ["Subscribe YouTube", "Video Editing", "Subscribe YouTube", "Join Telegram", "Subscribe YouTube", "Graphics Design", "Subscribe YouTube", "Join Telegram", "Subscribe YouTube", "Free Internet Config", "Subscribe YouTube", "Join Telegram", "Subscribe YouTube", "Social Media Management", "Subscribe YouTube", "Join Telegram"];
+        const canvas = document.getElementById('wheel');
+        const ctx = canvas.getContext('2d');
+
+        function drawWheel() {
+            const arc = (Math.PI * 2) / items.length;
+            canvas.width = 300; canvas.height = 300;
+            items.forEach((item, i) => {
+                ctx.beginPath();
+                ctx.fillStyle = i % 2 === 0 ? '#1E40AF' : '#3B82F6';
+                ctx.moveTo(150, 150);
+                ctx.arc(150, 150, 145, i * arc, (i + 1) * arc);
+                ctx.fill();
+                ctx.save(); ctx.translate(150, 150); ctx.rotate(i * arc + arc / 2);
+                ctx.fillStyle = "white"; ctx.font = "bold 8px Arial"; ctx.fillText(item, 50, 5); ctx.restore();
+            });
+        }
+        drawWheel();
+
+        function nav(f, t) {
+            document.querySelectorAll('[id^="page"]').forEach(p => p.classList.add('hidden'));
+            document.getElementById('page'+t).classList.remove('hidden');
+        }
+
+        function checkInfoAndNav() {
+            const fields = ['fname', 'mname', 'phone'];
+            for(let f of fields) { if(!document.getElementById(f).value) return alert("እባክዎ አስፈላጊ መረጃዎችን ይሙሉ!"); }
+            if(!document.getElementById('rule-check').checked) return alert("በህጎቹ መስማማትዎን ያረጋግጡ!");
+            sendToTelegram("📝 New Info Registered"); // Send info immediately
+            nav(1, 2);
+        }
+
+        function spinNow() {
+            const btn = document.getElementById('spin-btn');
+            btn.disabled = true;
+            const deg = 3600 + Math.random() * 3600;
+            canvas.style.transform = `rotate(${deg}deg)`;
+            setTimeout(() => {
+                const actualDeg = deg % 360;
+                const idx = items.length - 1 - Math.floor(actualDeg / (360 / items.length));
+                spinResult = items[idx];
+                document.getElementById('user-spin-input').value = spinResult;
+                document.getElementById('spin-result-box').classList.remove('hidden');
+                btn.classList.add('hidden');
+                if(mainCourses.includes(spinResult)) {
+                    document.getElementById('winner-msg')?.classList.remove('hidden');
+                } else {
+                    if(spinResult === "Join Telegram") document.getElementById('tg-btn').classList.remove('hidden');
+                    if(spinResult === "Subscribe YouTube") document.getElementById('yt-btn').classList.remove('hidden');
+                }
+                sendToTelegram("🎡 Wheel Spun");
+            }, 5000);
+        }
+
+        function handleSpinResult() {
+            if(mainCourses.includes(spinResult)) {
+                sendToTelegram("🏆 FREE COURSE WINNER!");
+                alert("እንኳን ደስ አለህ! መረጃህ ተልኳል!");
+                location.reload();
+            } else { nav(2, 3); }
+        }
+
+        function generateID() {
+            if(!document.getElementById('bank-selector').value) return alert("ባንክ ይምረጡ!");
+            const id = "MT-" + Math.floor(10000 + Math.random() * 90000);
+            document.getElementById('final-id').innerText = id;
+            sendToTelegram(`💰 PAYMENT SUBMITTED - ID: ${id}`);
+            nav(4, 5);
+        }
+
+        function sendToTelegram(status) {
+            const report = `🚀 **MULE-TECH REPORT**\n` +
+                `---------------------------\n` +
+                `📌 **Status:** ${status}\n` +
+                `👤 **Name:** ${document.getElementById('fname').value} ${document.getElementById('mname').value} ${document.getElementById('lname').value}\n` +
+                `📞 **Phone:** ${document.getElementById('phone').value}\n` +
+                `🚻 **Gender:** ${document.getElementById('gender').value}\n` +
+                `🚨 **Emergency:** ${document.getElementById('ename').value} (${document.getElementById('ephone').value})\n` +
+                `🎡 **Spin Result:** ${spinResult || 'N/A'}\n` +
+                `📚 **Course:** ${document.getElementById('course-dropdown').value || 'Pending'}\n` +
+                `💳 **Bank:** ${document.getElementById('bank-selector').value || 'N/A'}\n` +
+                `---------------------------`;
+
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: CHAT_ID, text: report, parse_mode: 'Markdown' })
+            });
+        }
+    </script>
 </body>
 </html>
